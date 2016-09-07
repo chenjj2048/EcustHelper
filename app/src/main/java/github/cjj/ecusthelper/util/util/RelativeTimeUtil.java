@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.lib.util;
+package github.cjj.ecusthelper.util.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +8,7 @@ import java.util.Date;
  * http://blog.csdn.net/qq435757399/article/details/44802723
  */
 //Todo：修改
+@Deprecated
 public class RelativeTimeUtil {
     private static final Date mNowDate = new Date();
     private static final long ONE_MINUTE = 60000L;

@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import butterknife.ButterKnife;
-import github.cjj.ecusthelper.lib.util.Objects;
+import github.cjj.ecusthelper.util.util.Objects;
 
 /**
  * Created on 2016/4/5

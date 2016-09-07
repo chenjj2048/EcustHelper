@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.lib.util;
+package github.cjj.ecusthelper.util.util;
 
 /**
  * Created on 2016/8/30

@@ -2,7 +2,7 @@ package github.cjj.ecusthelper.base;
 
 import android.support.annotation.NonNull;
 
-import github.cjj.ecusthelper.lib.util.Objects;
+import github.cjj.ecusthelper.util.util.Objects;
 
 
 /**

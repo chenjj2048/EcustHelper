@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.lib.util;
+package github.cjj.ecusthelper.util.util;
 
 import android.app.Activity;
 import android.support.v7.app.ActionBar;

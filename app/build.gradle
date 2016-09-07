@@ -25,11 +25,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     //Mockito & PowerMock
+    testCompile files('libs/javassist-3.20.0-GA.jar')
+    testCompile files('libs/mockito-core-1.10.19.jar')
+    testCompile files('libs/objenesis-2.2.jar')
+    testCompile files('libs/powermock-api-mockito-common-1.6.5.jar')
+    testCompile files('libs/powermock-mockito-1.6.5-full.jar')
     //ButterKnife
     compile 'com.jakewharton:butterknife:7.0.1'
     //leakcanary
@@ -44,6 +49,7 @@ dependencies {
     //retrofit
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    //compile 'com.squareup.retrofit2:converter-gson:2.1.0'  //这个只是用来看看怎么转成gson的，以后删除
     //Jsoup
     compile 'org.jsoup:jsoup:1.9.1'
     //Glide
@@ -51,4 +57,7 @@ dependencies {
     //compile 'jp.wasabeef:glide-transformations:2.0.1'
     //LabelView
     compile 'com.flyco.labelview:FlycoLabelView_Lib:1.0.2'
+    //StickyHeaders for RecyclerView
+    compile 'org.zakariya.stickyheaders:stickyheaders:0.7.5'
+
 }

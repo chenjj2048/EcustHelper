@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.lib.util;
+package github.cjj.ecusthelper.util.util;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

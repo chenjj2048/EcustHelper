@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.lib.util;
+package github.cjj.ecusthelper.util.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
