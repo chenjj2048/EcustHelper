@@ -1,13 +1,8 @@
 package github.cjj.ecusthelper.ui.news;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.zakariya.stickyheaders.StickyHeaderLayoutManager;
 
@@ -15,16 +10,7 @@ import butterknife.Bind;
 import github.cjj.ecusthelper.R;
 import github.cjj.ecusthelper.adapter.NewsItemAdapter;
 import github.cjj.ecusthelper.base.BaseMvpFragment;
-import github.cjj.ecusthelper.bean.NewsBean;
-import github.cjj.ecusthelper.convert.NewsConverterFactory;
-import github.cjj.ecusthelper.retrofit.NewsService;
-import github.cjj.ecusthelper.util.util.RetrofitUtil;
 import github.cjj.ecusthelper.util.util.SizeUtil;
-import github.cjj.ecusthelper.util.util.logUtil;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created on 2016/9/5
@@ -40,58 +26,45 @@ public class NewsFragment extends BaseMvpFragment<NewsContract.Presenter> implem
     /**
      * Index:对应不同新闻版块
      */
-    private int fragmentIndex;
+    private int fragmentID;
 
     public static NewsFragment newInstance(int pos) {
         NewsFragment fragment = new NewsFragment();
-        fragment.fragmentIndex = pos;
+        fragment.fragmentID = pos;
         return fragment;
     }
 
     @Override
     protected NewsContract.Presenter createPresenter() {
-        return new NewsPresenter();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_news_list, container, false);
+        return new NewsPresenter(this);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected int getLayoutResId() {
+        return R.layout.fragment_news_list;
+    }
+
+    @Override
+    protected void finishCreateView(Bundle state) {
         initRecyclerView();
         initSwipeRefreshLayout();
-
-        RetrofitUtil.create("http://news.ecust.edu.cn/", NewsConverterFactory.create(), NewsService.class)
-                .getNews(1)
-                .flatMap(newsPageParseResult1 ->
-                        Observable.from(newsPageParseResult1.getItems()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NewsBean>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(NewsBean newsBean) {
-                        logUtil.w(this, newsBean.getTitle() + "  " + newsBean.getTime() + " " + newsBean.getUrl());
-                        Toast.makeText(getContext(),newsBean.getTitle() + "  " + newsBean.getTime() + " " + newsBean.getUrl(),Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
+    @Override
+    protected void lazyLoad() {
+        /**
+         * 初次加载数据
+         */
+        getPresenter().fetchNews();
+    }
+
+    @Override
+    public int getFragmentId() {
+        return fragmentID;
+    }
 
     private void initRecyclerView() {
-        NewsItemAdapter mAdapter = getPresenter().getAdapter();
+        final NewsItemAdapter mAdapter = getPresenter().getAdapter();
         mRecyclerView.setLayoutManager(new StickyHeaderLayoutManager());
         mRecyclerView.setAdapter(mAdapter);
 

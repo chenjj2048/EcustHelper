@@ -3,19 +3,18 @@ package github.cjj.ecusthelper.bean;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 import github.cjj.ecusthelper.util.util.DateUtil;
 import github.cjj.ecusthelper.util.util.Objects;
-import github.cjj.ecusthelper.util.util.RelativeTimeUtil;
 
 /**
  * Created on 2016/4/24
  *
  * @author chenjj2048
  */
-public final class NewsBean implements Comparable<NewsBean>, Serializable {
+public class NewsBean implements Comparable<NewsBean>, Serializable {
     private static final long serialVersionUID = 12305938204985L;
 
     /**
@@ -23,20 +22,20 @@ public final class NewsBean implements Comparable<NewsBean>, Serializable {
      */
     private final String mTitle;
     /**
-     * 时间
-     */
-    private final Date mDate;
-    /**
      * 网络地址
      */
     private final String mUrl;
+    /**
+     * 时间
+     */
+    private Date mDate;
 
     /**
      * @param title 标题
      * @param time  如"2016-08-31"
      * @param url   url
      */
-    public NewsBean(String title, String time, String url) {
+    public NewsBean(String title, String time, String url) throws ParseException {
         Objects.requireNonNull(title);
         Objects.requireNonNull(time);
         Objects.requireNonNull(url);
@@ -57,6 +56,10 @@ public final class NewsBean implements Comparable<NewsBean>, Serializable {
         return mUrl;
     }
 
+    public Date getDate() {
+        return mDate;
+    }
+
     @Override
     public int compareTo(@NonNull NewsBean another) {
         return this.mDate.compareTo(another.mDate);
@@ -65,10 +68,16 @@ public final class NewsBean implements Comparable<NewsBean>, Serializable {
     /**
      * @return 几天前等字样
      */
-    //Todo:以后修改这个
-    public String getRelativeTimeFromNow() {
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final RelativeTimeUtil relativeDate = new RelativeTimeUtil(dateFormat, false);
-        return relativeDate.parseDateAndTime(mDate);
+    public String getRelativeTimeSpanString() {
+        String str = innerGetRelativeTime();
+        str = str.contains("秒") ? "今天" : str.replace(" ", "");
+        return str;
+    }
+
+    /**
+     * 可被Mock掉，用于测试
+     */
+    protected String innerGetRelativeTime() {
+        return DateUtil.getRelativeTimeSpanString(mDate.getTime());
     }
 }

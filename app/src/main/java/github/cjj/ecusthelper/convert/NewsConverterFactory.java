@@ -3,6 +3,7 @@ package github.cjj.ecusthelper.convert;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import github.cjj.ecusthelper.bean.NewsPageParseResult;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -19,7 +20,7 @@ public class NewsConverterFactory extends Converter.Factory {
     }
 
     @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
+    public Converter<ResponseBody, NewsPageParseResult> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
         return responseBody -> NewsParser.getInstance()
                 .apply(responseBody.string());
     }

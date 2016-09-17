@@ -1,7 +1,6 @@
 package github.cjj.ecusthelper.ui.news;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 
 import github.cjj.ecusthelper.adapter.NewsItemAdapter;
 
@@ -14,10 +13,13 @@ public interface NewsContract {
     interface IView {
 
         Context getContext();
+        int getFragmentId();
     }
 
     interface Presenter {
 
-       NewsItemAdapter getAdapter();
+        NewsItemAdapter getAdapter();
+
+        void fetchNews();
     }
 }

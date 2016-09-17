@@ -1,13 +1,15 @@
 package github.cjj.ecusthelper.util.util;
 
+import android.text.format.DateUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日期操作工具类
- * 修改自https://github.com/xybCoder/AndroidCommon/blob/63a68dccc003830e134b860b7220f3444ee0fd69/library/src/main/java/com/utils/library/DateUtil.java
  */
 @SuppressWarnings({"SimpleDateFormat", "unused"})
 public class DateUtil {
@@ -17,26 +19,18 @@ public class DateUtil {
     /**
      * 将时间字符串转换成Date
      */
-    public static Date str2Date(String str, String format) {
+    public static Date str2Date(String str, String format) throws ParseException {
         if (str == null || str.length() == 0) {
             return null;
         }
         if (format == null || format.length() == 0) {
             format = FORMAT;
         }
-        Date date = null;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat(format);
-            date = sdf.parse(str);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return date;
-
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.parse(str);
     }
 
-    public static Date str2Date(String str) {
+    public static Date str2Date(String str) throws ParseException {
         return str2Date(str, null);
     }
 
@@ -47,8 +41,7 @@ public class DateUtil {
      * @param format format
      * @return Calendar
      */
-    public static Calendar str2Calendar(String str, String format) {
-
+    public static Calendar str2Calendar(String str, String format) throws ParseException {
         Date date = str2Date(str, format);
         if (date == null) {
             return null;
@@ -56,29 +49,29 @@ public class DateUtil {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         return c;
-
     }
 
-    public static Calendar str2Calendar(String str) {
+    public static Calendar str2Calendar(String str) throws ParseException {
         return str2Calendar(str, null);
     }
 
-    public static String date2Str(Calendar c) {// yyyy-MM-dd HH:mm:ss
-        return date2Str(c, null);
+    public static String calendar2Str(Calendar c) {// yyyy-MM-dd HH:mm:ss
+        return calendar2Str(c, null);
     }
 
     public static String date2Str(Date d) {// yyyy-MM-dd HH:mm:ss
         return date2Str(d, null);
     }
 
-    public static String date2Str(Calendar c, String format) {
+    public static String calendar2Str(Calendar c, String format) {
         if (c == null) {
             return null;
         }
         return date2Str(c.getTime(), format);
     }
 
-    public static String date2Str(Date d, String format) {// yyyy-MM-dd HH:mm:ss
+    public static String date2Str(Date d, String format) {
+        // yyyy-MM-dd HH:mm:ss
         if (d == null) {
             return null;
         }
@@ -87,6 +80,12 @@ public class DateUtil {
         }
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(d);
+    }
+
+    public static Calendar date2Calendar(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 
     /**
@@ -109,7 +108,7 @@ public class DateUtil {
      */
     public static String getCurDateStr(String format) {
         Calendar c = Calendar.getInstance();
-        return date2Str(c, format);
+        return calendar2Str(c, format);
     }
 
     /**
@@ -139,7 +138,6 @@ public class DateUtil {
     public static String getSMillon(long time) {
         return new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS").format(time);
     }
-
 
     /**
      * 输入的是String，格式诸如20120102，实现加一天的功能，返回的格式为String，诸如20120103
@@ -236,5 +234,51 @@ public class DateUtil {
         int oneDay = calendar.get(Calendar.DAY_OF_YEAR);
         int anotherDay = calendar2.get(Calendar.DAY_OF_YEAR);
         return oneDay == anotherDay;
+    }
+
+    /**
+     * 返回几秒前，几天前，几天后等字样
+     *
+     * @param time time
+     * @param now  now
+     * @return 时间差字符串
+     * @See DateUtilTest
+     */
+    public static String getRelativeTimeSpanString(long time, long now) {
+        String relativeTimeSpan;
+        long days = (time - now) / TimeUnit.DAYS.toMillis(1);
+
+        if (days > -7 && days < 7) {
+            //7天时间内用系统类进行解析
+            relativeTimeSpan = DateUtils.getRelativeTimeSpanString(
+                    time,
+                    now,
+                    0,  //Pass one of 0,MINUTE_IN_MILLIS, HOUR_IN_MILLIS, DAY_IN_MILLIS,WEEK_IN_MILLIS
+                    DateUtils.FORMAT_ABBREV_RELATIVE)
+                    .toString();
+        } else {
+            //7天时间以外用其他方式解析
+            days = days > 0 ? days : -days;
+            if (days <= 30)
+                relativeTimeSpan = days + " 天";
+            else if (days < 365)
+                relativeTimeSpan = (days / 31) + " 个月";
+            else
+                relativeTimeSpan = (days / 365) + " 年";
+
+            relativeTimeSpan += (time < now) ? "前" : "后";
+        }
+        return relativeTimeSpan;
+    }
+
+    /**
+     * 返回几秒前，几天前，几天后等字样
+     *
+     * @param time time
+     * @return 时间差字符串
+     * @See DateUtilTest
+     */
+    public static String getRelativeTimeSpanString(long time) {
+        return getRelativeTimeSpanString(time, System.currentTimeMillis());
     }
 }

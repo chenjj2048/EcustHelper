@@ -38,9 +38,9 @@ dependencies {
     //ButterKnife
     compile 'com.jakewharton:butterknife:7.0.1'
     //leakcanary
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
     //透明状态栏
     compile 'com.jaeger.statusbaruitl:library:1.0.0'
     //RxJava
@@ -49,7 +49,6 @@ dependencies {
     //retrofit
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    //compile 'com.squareup.retrofit2:converter-gson:2.1.0'  //这个只是用来看看怎么转成gson的，以后删除
     //Jsoup
     compile 'org.jsoup:jsoup:1.9.1'
     //Glide

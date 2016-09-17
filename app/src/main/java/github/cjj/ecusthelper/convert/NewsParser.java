@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,13 @@ public class NewsParser implements Function<String, NewsPageParseResult> {
             final String time = li.getElementsByClass("time").first().text();
             final String url = uniformUrl("http://news.ecust.edu.cn" + li.select("a").attr("href"));
 
-            final NewsBean item = new NewsBean(title, time, url);
+            NewsBean item = null;
+            try {
+                item = new NewsBean(title, time, url);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            assert item != null;
             mList.add(item);
         }
         mResult.setItems(mList);
@@ -105,7 +112,7 @@ public class NewsParser implements Function<String, NewsPageParseResult> {
      * 将http://news.ecust.edu.cn/news/35445?important=&category_id=7
      * 统一转为http://news.ecust.edu.cn/news/35445
      * .
-     * 地址内容均能正常访问
+     * 保证转换后地址内容均能正常访问
      */
     private String uniformUrl(String url) {
         Objects.requireNonNull(url);

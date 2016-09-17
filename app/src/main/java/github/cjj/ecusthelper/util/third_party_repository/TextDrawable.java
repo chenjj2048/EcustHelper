@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.util.gitrepository;
+package github.cjj.ecusthelper.util.third_party_repository;
 
 /**
  * https://gist.github.com/jossiwolf/3333379af7901771fc75

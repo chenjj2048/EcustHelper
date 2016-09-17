@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorTranslucent">#80ffffff</color>
     <color name="colorBlackGray">#404040</color>
+
+    <color name="bgColorGray">#ffe0e0e0</color>
+    <color name="textColorGray">#ff757575</color>
 </resources>

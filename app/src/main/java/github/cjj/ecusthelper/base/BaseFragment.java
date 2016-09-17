@@ -1,15 +1,16 @@
 package github.cjj.ecusthelper.base;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
-import github.cjj.ecusthelper.util.util.Objects;
 
 /**
  * Created on 2016/4/5
@@ -17,35 +18,31 @@ import github.cjj.ecusthelper.util.util.Objects;
  * @author chenjj2048
  */
 public abstract class BaseFragment extends Fragment {
-    private final Handler mHandler = new Handler();
-    private Context context;
-    private int mFragmentIndex;
+    // 标志位 标志已经初始化完成。
+    protected boolean isPrepared;
+    //标志位 fragment是否可见
+    protected boolean isVisible;
+    private Handler mHandler;
 
+    @LayoutRes
+    protected abstract int getLayoutResId();
+
+    protected abstract void finishCreateView(Bundle state);
+
+    protected abstract void lazyLoad();
+
+    @Nullable
     @Override
-    @CallSuper
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = Objects.requireNonNull(context);
+    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getLayoutResId(), container, false);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    @CallSuper
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.context = Objects.requireNonNull(activity);
-    }
-
-    @Override
-    public Context getContext() {
-        return Objects.requireNonNull(context, "请在onAttach后使用");
-    }
-
-    @CallSuper
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public final void onViewCreated(View view, Bundle savedInstanceState) {
+        //绑定控件
         ButterKnife.bind(this, view);
+        //初始化控件
+        finishCreateView(savedInstanceState);
     }
 
     @CallSuper
@@ -53,15 +50,31 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-        mHandler.removeMessages(0);
+        if (mHandler != null)
+            mHandler.removeMessages(0);
     }
 
-    public int getFragmentIndex() {
-        return mFragmentIndex;
+    /**
+     * Fragment数据的懒加载
+     *
+     * @param isVisibleToUser isVisibleToUser
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        isVisible = getUserVisibleHint();
+        if (isVisible)
+            onVisible();
+        else
+            onInvisible();
     }
 
-    public void setFragmentIndex(int index) {
-        this.mFragmentIndex = index;
+    protected void onVisible() {
+        lazyLoad();
+    }
+
+    protected void onInvisible() {
     }
 
     /**
@@ -69,12 +82,14 @@ public abstract class BaseFragment extends Fragment {
      *
      * @param runnable runnable
      */
-    protected void executeRunnable(Runnable runnable) {
+    protected final void postRunnable(Runnable runnable) {
+        if (mHandler == null) mHandler = new Handler();
+
         mHandler.postDelayed(() -> {
-            if (context != null) {
+            if (super.getContext() != null) {
                 runnable.run();
             } else {
-                executeRunnable(runnable);
+                postRunnable(runnable);
             }
         }, 50);
     }

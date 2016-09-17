@@ -7,11 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.jaeger.library.StatusBarUtil;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
 import github.cjj.ecusthelper.R;
@@ -22,30 +19,22 @@ import github.cjj.ecusthelper.R;
  * @author chenjj2048
  */
 public abstract class BaseAppCompatActivity extends AppCompatActivity {
-    private static WeakReference<AppCompatActivity> mLastUsedActivity = new WeakReference<>(null);
     private boolean mStatusbarInstalled = false;
 
-    @Nullable
-    public static AppCompatActivity getLastUsedActivity() {
-        return mLastUsedActivity.get();
-    }
+    @LayoutRes
+    protected abstract int getLayoutResId();
+
+    protected abstract void initViews(Bundle savedInstanceState);
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLastUsedActivity = new WeakReference<>(this);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        super.setContentView(view);
+        //设置布局内容
+        setContentView(getLayoutResId());
+        //初始化绑定框架
         ButterKnife.bind(this);
-    }
-
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        super.setContentView(layoutResID);
-        ButterKnife.bind(this);
+        //初始化控件
+        initViews(savedInstanceState);
     }
 
     @Override

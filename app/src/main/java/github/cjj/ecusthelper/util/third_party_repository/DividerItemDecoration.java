@@ -1,4 +1,4 @@
-package github.cjj.ecusthelper.util.other;
+package github.cjj.ecusthelper.util.third_party_repository;
 
 import android.content.Context;
 import android.content.res.TypedArray;
